@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Neko Coffee – Đặt thức uống online, giao hàng tận nơi. Trải nghiệm cà phê tuyệt hảo, phục vụ tận tâm." />
+  <title>Neko Coffee – Thức Uống Tuyệt Hảo</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- App Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- ===================== NAVBAR ===================== -->
+  <nav class="navbar">
+    <div class="logo" onclick="app.navigate('home')" style="cursor: pointer">
+      <i class="fa-solid fa-mug-hot"></i>
+      Neko<span>Coffee</span>
+    </div>
+
+    <div class="nav-links">
+      <a href="#" onclick="app.navigate('home')" id="nav-home">
+        <i class="fa-solid fa-house"></i> Trang chủ
+      </a>
+      <a href="#" onclick="app.navigate('menu')" id="nav-menu">
+        <i class="fa-solid fa-list"></i> Menu
+      </a>
+      <a href="#" onclick="app.navigate('checkout')" id="nav-checkout">
+        <i class="fa-solid fa-bag-shopping"></i> Thanh toán
+      </a>
+      <a href="#" onclick="app.navigate('orders')" id="nav-orders" class="hidden">
+        <i class="fa-solid fa-receipt"></i> Đơn hàng
+      </a>
+      <a href="#" onclick="app.navigate('admin')" id="nav-admin" class="hidden">
+        <i class="fa-solid fa-chart-line"></i> Quản trị
+      </a>
+      <a href="#" onclick="app.navigate('shift-report')" id="nav-shift" class="hidden">
+        <i class="fa-solid fa-clipboard-list"></i> Báo cáo
+      </a>
+      <div id="nav-notifications" class="hidden"
+        style="position: relative; display: inline-block; cursor: pointer; margin: 0 10px;"
+        onclick="app.toggleNotifications(event)">
+        <i class="fa-solid fa-bell" style="font-size: 18px; color: var(--text-primary);"></i>
+        <span id="notification-badge"
+          style="position: absolute; top: -6px; right: -8px; background: var(--danger); color: white; font-size: 10px; font-weight: bold; padding: 2px 5px; border-radius: 10px; display: none;">0</span>
+
+        <!-- Dropdown -->
+        <div id="notification-dropdown" class="hidden"
+          style="position: absolute; top: 35px; right: -20px; width: 320px; background: var(--bg-white); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); border: 1px solid var(--border-color); z-index: 3000; cursor: default; text-align: left;"
+          onclick="event.stopPropagation()">
+          <div
+            style="padding: 12px 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <strong style="font-size: 14px; color: var(--text-primary);">Thông báo</strong>
+            <span style="font-size: 12px; color: var(--primary); cursor: pointer; font-weight: 600;"
+              onclick="app.markAllNotificationsRead(event)">Đánh dấu đã đọc</span>
+          </div>
+          <div id="notification-list" style="max-height: 350px; overflow-y: auto; padding: 0;">
+            <div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">Chưa có thông báo
+              nào</div>
+          </div>
+        </div>
+      </div>
+
+      <a href="#" onclick="app.navigate('login')" id="nav-login" class="nav-cta">
+        <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập
+      </a>
+      <a href="#" onclick="app.logout()" id="nav-logout" class="hidden nav-logout">
+        <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+      </a>
+    </div>
+  </nav>
+
+  <!-- ===================== VIEWS CONTAINER ===================== -->
+
+  <!-- ====== HOME VIEW ====== -->
+  <div id="home-view" class="view active" style="padding: 0">
+    <!-- Hero Banner -->
+    <section class="hero-section">
+      <div class="hero-bg-dots"></div>
+      <div class="hero-blob hero-blob-1"></div>
+      <div class="hero-blob hero-blob-2"></div>
+
+      <div class="hero-content">
+        <!-- Left: Text -->
+        <div class="hero-text">
+          <div class="hero-badge">
+            <i class="fa-solid fa-star"></i>
+            Thương hiệu cà phê yêu thích
+          </div>
+          <h1>Cà Phê Ngon<br /><span>Khoảnh Khắc Đáng Nhớ</span></h1>
+          <p>
+            Nơi mỗi tách cà phê là một hành trình cảm xúc. Đặt món online –
+            nhận tại quầy hoặc giao tận nơi.
+          </p>
+          <div class="hero-cta-group">
+            <button class="hero-cta-primary" onclick="app.navigate('menu')">
+              <i class="fa-solid fa-mug-hot" style="margin-right: 6px"></i>
+              Đặt Món Ngay
+            </button>
+            <button class="hero-cta-secondary" onclick="app.navigate('menu')">
+              <i class="fa-solid fa-book-open" style="margin-right: 6px"></i>
+              Xem Thực Đơn
+            </button>
+          </div>
+        </div>
+        <!-- Right: Logo / Image Placeholder -->
+        <div class="hero-image-box">
+          <img src="img/nekohome3.png" alt="Neko Coffee Image" class="my-custom-img" />
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value">500+</div>
+        <div class="hero-stat-label">Khách hàng</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">30+</div>
+        <div class="hero-stat-label">Món đặc trưng</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">3</div>
+        <div class="hero-stat-label">Chi nhánh</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">4.9 ★</div>
+        <div class="hero-stat-label">Đánh giá</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== MENU VIEW ====== -->
+  <div id="menu-view" class="view hidden">
+    <div class="page-header">
+      <h2><i class="fa-solid fa-list"></i> Thực Đơn</h2>
+      <p>Chọn món yêu thích và thêm vào giỏ hàng</p>
+    </div>
+    <div id="product-list" class="grid-container">
+      <!-- Products injected by app.js -->
+    </div>
+  </div>
+
+  <!-- ====== CHECKOUT VIEW ====== -->
+  <div id="checkout-view" class="view hidden">
+    <div class="page-header">
+      <h2><i class="fa-solid fa-bag-shopping"></i> Thanh Toán</h2>
+      <p>Kiểm tra đơn hàng và xác nhận đặt món</p>
+    </div>
+
+    <div class="checkout-container">
+      <!-- Left: Cart Items -->
+      <div class="cart-items">
+        <div class="cart-items-header">
+          <i class="fa-solid fa-cart-shopping" style="color: var(--primary)"></i>
+          Giỏ hàng của bạn
+        </div>
+        <div id="checkout-cart">
+          <!-- Cart items injected by app.js -->
+        </div>
+      </div>
+
+      <!-- Right: Order Form -->
+      <div class="checkout-form-group">
+        <div id="branch-selection"
+          style="margin-bottom: 6px; background: var(--bg-card); padding: 15px; border-radius: var(--radius-md); border: 1px solid var(--primary-border);">
+          <label style="font-weight: 600; color: var(--primary); display: block; margin-bottom: 6px;">
+            <i class="fa-solid fa-store"></i> Chọn chi nhánh phục vụ:
+          </label>
+          <select id="checkout-macn" class="input-brutal" style="width: 100%; padding: 10px;">
+            <option value="CN01">Neko Center Quận 1 (120 Lê Lợi)</option>
+            <option value="CN02">Neko Hàm Nghi (45 Hàm Nghi)</option>
+          </select>
+        </div>
+
+        <div class="checkout-section-title">
+          <i class="fa-solid fa-truck"></i> Hình thức nhận hàng
+        </div>
+        <div class="radio-group">
+          <label class="radio-card">
+            <input type="radio" name="delivery-type" id="radio-pickup" value="Mang đi" checked
+              onchange="app.toggleDelivery()" />
+            <span class="radio-card-label">
+              <i class="fa-solid fa-store"></i>
+              Lấy tại quầy
+            </span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="delivery-type" id="radio-delivery" value="Giao hàng"
+              onchange="app.toggleDelivery()" />
+            <span class="radio-card-label">
+              <i class="fa-solid fa-motorcycle"></i>
+              Giao tận nơi
+            </span>
+          </label>
+        </div>
+
+        <!-- Delivery Info (hidden by default) -->
+        <div id="delivery-info">
+          <input type="text" id="checkout-phone" placeholder="Số điện thoại người nhận" class="input-brutal" />
+          <input type="text" id="checkout-address" placeholder="Địa chỉ chi tiết (Số nhà, tên đường, phường...)"
+            class="input-brutal" />
+        </div>
+
+        <!-- Payment Method (UI only) -->
+        <div class="checkout-section-title" style="margin-top: 16px">
+          <i class="fa-solid fa-wallet"></i> Phương thức thanh toán
+        </div>
+        <div class="radio-group">
+          <label class="radio-card">
+            <input type="radio" name="payment-method" id="radio-cash" value="cash" checked />
+            <span class="radio-card-label">
+              <i class="fa-solid fa-money-bill-wave"></i>
+              Tiền mặt
+            </span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="payment-method" id="radio-transfer" value="transfer" />
+            <span class="radio-card-label">
+              <i class="fa-solid fa-qrcode"></i>
+              Chuyển khoản / Momo
+            </span>
+          </label>
+        </div>
+
+        <!-- Points / Discount (Customer only) -->
+        <div class="customer-only hidden" id="points-group">
+          <label>
+            <i class="fa-solid fa-coins" style="color: var(--primary)"></i>
+            Điểm tích lũy:
+            <span id="current-points" style="font-weight: 800">0</span> điểm
+          </label>
+          <select id="checkout-discount" onchange="app.calculateTotal()">
+            <option value="0">Không dùng điểm</option>
+            <option value="1000">Dùng 1.000 điểm (–10%)</option>
+            <option value="2000">Dùng 2.000 điểm (–20%)</option>
+          </select>
+        </div>
+
+        <!-- Totals -->
+        <div class="total-section">
+          <div class="total-row">
+            <span>Tạm tính</span>
+            <span><span id="sub-total">0</span>đ</span>
+          </div>
+          <div class="total-row">
+            <span>Giảm giá</span>
+            <span style="color: var(--success)">–<span id="discount-total">0</span>đ</span>
+          </div>
+          <div class="total-row total-final">
+            <span>Tổng cộng</span>
+            <span><span id="final-total">0</span>đ</span>
+          </div>
+        </div>
+
+        <button class="btn-primary w-100" id="btn-checkout" onclick="app.checkout()">
+          <i class="fa-solid fa-check-circle"></i> Xác Nhận Đặt Hàng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== ORDERS VIEW ====== -->
+  <div id="orders-view" class="view hidden">
+    <div class="page-header">
+      <h2><i class="fa-solid fa-receipt"></i> Quản Lý Đơn Hàng</h2>
+      <p>Theo dõi và xử lý các đơn hàng</p>
+    </div>
+
+    <!-- Toolbar with date filter -->
+    <div class="orders-toolbar">
+      <div class="orders-toolbar-left">
+        <div class="date-filter-group">
+          <i class="fa-solid fa-calendar-days"></i>
+          <input type="date" id="order-date-filter" onchange="app.filterOrdersByDate()" />
+        </div>
+        <button class="btn-secondary" onclick="app.clearDateFilter()"
+          style="padding: 8px 14px; font-size: 13px; margin: 0">
+          <i class="fa-solid fa-rotate-left"></i> Xóa lọc
+        </button>
+      </div>
+      <span class="orders-count-badge" id="orders-count-badge">
+        <i class="fa-solid fa-list"></i> 0 đơn hàng
+      </span>
+    </div>
+
+    <div class="orders-tabs" id="customer-order-tabs"
+      style="display: none; border-bottom: 1px solid var(--border-color); margin-bottom: 20px;">
+      <button class="btn-ghost active" id="tab-current-orders" onclick="app.switchOrderTab('current')"
+        style="border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 2px solid var(--primary); color: var(--primary);">Đơn
+        hàng hiện tại</button>
+      <button class="btn-ghost" id="tab-history-orders" onclick="app.switchOrderTab('history')"
+        style="border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 2px solid transparent;">Lịch
+        sử đơn hàng (Đã hoàn thành)</button>
+    </div>
+
+    <div id="orders-list" class="orders-container">
+      <!-- Orders injected by app.js -->
+    </div>
+  </div>
+
+  <!-- ====== ADMIN VIEW ====== -->
+  <div id="admin-view" class="view hidden">
+    <div class="page-header">
+      <h2><i class="fa-solid fa-chart-line"></i> Quản Trị Chi Nhánh</h2>
+      <p>Báo cáo doanh thu và chi tiết ca làm việc</p>
+    </div>
+
+    <!-- LỚP 1: Danh sách chi nhánh (Thẻ lớn) -->
+    <div id="reports-list" class="admin-layer-1">
+      <!-- Injected via app.js -->
+    </div>
+
+    <!-- LỚP 2: Danh sách ca của 1 chi nhánh -->
+    <div id="admin-branch-shifts-container" class="admin-layer-2 hidden">
+      <div class="layer-title"
+        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; width: 100%;">
+        <h3 id="admin-branch-shifts-title" style="margin: 0; font-size: 18px;"></h3>
+        <button onclick="app.backToBranches()"
+          style="cursor: pointer; padding: 8px 20px; border-radius: 6px; background: var(--primary); color: white; border: none; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+          <i class="fa-solid fa-arrow-left"></i> Quay Lại
+        </button>
+      </div>
+      <div id="admin-branch-shifts-list" class="shifts-grid">
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SHIFT REPORT VIEW ====== -->
+  <div id="shift-report-view" class="view hidden">
+    <div class="page-header">
+      <h2><i class="fa-solid fa-clipboard-list"></i> Báo Cáo Ca Làm Việc</h2>
+      <p>Thông tin doanh thu và các đơn hàng trong ca hiện tại</p>
+    </div>
+
+    <div id="shift-report-content" class="report-card">
+      <!-- Shift report details injected by app.js -->
+    </div>
+
+    <button id="btn-submit-shift-report" class="btn-primary w-100 hidden" style="margin-top: 20px; padding: 14px"
+      onclick="app.submitShiftReport()">
+      <i class="fa-solid fa-paper-plane"></i> Nộp Báo Cáo & Kết Thúc Ca
+    </button>
+  </div>
+
+  <!-- ====== LOGIN / REGISTER VIEW ====== -->
+  <div id="login-view" class="view hidden">
+    <div class="auth-wrapper-v2">
+      <div class="slider-container" id="slider-container">
+
+        <!-- FORM ĐĂNG KÝ (NẰM BÊN TRÁI, ẨN MẶC ĐỊNH) -->
+        <div class="slider-form-container sign-up-container">
+          <div class="slider-form">
+            <h2>Tạo Tài Khoản</h2>
+            <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Đăng ký để
+              tích lũy điểm & nhận ưu đãi</p>
+            <input type="text" id="reg-name" placeholder="Họ và tên" class="input-brutal" />
+            <input type="text" id="reg-phone" placeholder="Số điện thoại" class="input-brutal" />
+            <input type="text" id="reg-username" placeholder="Tài khoản" class="input-brutal" />
+            <input type="password" id="reg-password" placeholder="Mật khẩu" class="input-brutal"
+              onkeydown="if(event.key === 'Enter') app.register()" />
+            <button class="btn-primary w-100" onclick="app.register()">
+              <i class="fa-solid fa-user-plus"></i> Đăng Ký
+            </button>
+            <div id="reg-message"
+              style="color: var(--danger); font-size: 13px; margin-top: 12px; text-align: center; font-weight: 500; min-height: 18px;">
+            </div>
+          </div>
+        </div>
+
+        <!-- FORM ĐĂNG NHẬP (NẰM BÊN TRÁI, HIỆN MẶC ĐỊNH) -->
+        <div class="slider-form-container sign-in-container">
+          <div class="slider-form">
+            <h2>Đăng Nhập</h2>
+            <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Sử dụng tài
+              khoản của bạn</p>
+
+            <div id="staff-only-notice" class="staff-only-notice hidden" style="margin-bottom: 15px;">
+              <i class="fa-solid fa-shield-halved"></i> Nhân viên chỉ dùng form Đăng nhập.
+            </div>
+
+            <input type="text" id="login-username" placeholder="Tài khoản / Mã NV" class="input-brutal" />
+            <input type="password" id="login-password" placeholder="Mật khẩu" class="input-brutal"
+              onkeydown="if(event.key === 'Enter') app.login()" />
+            <button class="btn-primary w-100" onclick="app.login()">
+              <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập
+            </button>
+            <div id="login-message"
+              style="color: var(--danger); font-size: 13px; margin-top: 12px; text-align: center; font-weight: 500; min-height: 18px;">
+            </div>
+          </div>
+        </div>
+
+        <!-- TẤM CHE MÀU XANH TRƯỢT QUA LẠI -->
+        <div class="slider-overlay-container">
+          <div class="slider-overlay">
+            <!-- CHỮ HIỆN RA KHI ĐANG Ở BÊN ĐĂNG KÝ -->
+            <div class="slider-overlay-panel slider-overlay-left">
+              <h2>Mừng bạn trở lại!</h2>
+              <p style="margin: 15px 0; font-size: 14px;">Đã có tài khoản? Đăng nhập để tiếp tục trải nghiệm và theo
+                dõi
+                đơn hàng nhé.</p>
+              <button class="btn-ghost" onclick="app.toggleAuthForm(event)">Đăng Nhập</button>
+            </div>
+            <!-- CHỮ HIỆN RA KHI ĐANG Ở BÊN ĐĂNG NHẬP (MẶC ĐỊNH) -->
+            <div class="slider-overlay-panel slider-overlay-right">
+              <i class="fa-solid fa-mug-hot" style="font-size: 45px; margin-bottom: 15px;"></i>
+              <h2>Chào bạn mới!</h2>
+              <p style="margin: 15px 0; font-size: 14px;">Chưa có tài khoản? Đăng ký ngay để nhận ưu đãi và đặt hàng
+                nhanh chóng.</p>
+              <button class="btn-ghost" onclick="app.toggleAuthForm(event)">Đăng Ký Ngay</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== FLOATING CART ===================== -->
+  <div id="floating-cart" class="floating-cart hidden" onclick="app.navigate('checkout')" title="Xem giỏ hàng">
+    <i class="fa-solid fa-bag-shopping"></i>
+    <span class="cart-badge" id="cart-count">0</span>
+  </div>
+
+  <!-- ===================== REVIEW MODAL ===================== -->
+  <div id="review-modal" class="hidden"
+    style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center;">
+    <div
+      style="background: var(--bg-white); padding: 30px; border-radius: var(--radius-lg); width: 400px; max-width: 90%; box-shadow: var(--shadow-lg);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="margin: 0; font-size: 18px;"><i class="fa-solid fa-star" style="color: var(--warning)"></i> Đánh Giá
+          Đơn Hàng</h3>
+        <button class="btn-ghost btn-icon" onclick="app.closeReviewModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <input type="hidden" id="review-mahd" />
+      <input type="hidden" id="review-macn" />
+
+      <div style="margin-bottom: 15px; text-align: center;">
+        <label style="display: block; text-align: left; margin-bottom: 10px;">Chất lượng phục vụ:</label>
+        <div id="star-rating"
+          style="font-size: 30px; color: var(--border-color); cursor: pointer; display: flex; justify-content: center; gap: 8px;">
+          <i class="fa-solid fa-star star-btn" data-value="1" onclick="app.setReviewStars(1)"></i>
+          <i class="fa-solid fa-star star-btn" data-value="2" onclick="app.setReviewStars(2)"></i>
+          <i class="fa-solid fa-star star-btn" data-value="3" onclick="app.setReviewStars(3)"></i>
+          <i class="fa-solid fa-star star-btn" data-value="4" onclick="app.setReviewStars(4)"></i>
+          <i class="fa-solid fa-star star-btn" data-value="5" onclick="app.setReviewStars(5)"></i>
+        </div>
+        <input type="hidden" id="review-stars" value="5" />
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <label>Nội dung đánh giá:</label>
+        <textarea id="review-content" class="input-brutal" style="resize: none; height: 80px;"
+          placeholder="Chia sẻ cảm nhận của bạn..."></textarea>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label>Hình ảnh (Tùy chọn):</label>
+        <input type="file" id="review-image" accept="image/*" class="input-brutal" style="padding: 8px;"
+          onchange="app.handleReviewImageUpload(event)" />
+        <input type="hidden" id="review-image-base64" />
+        <div id="review-image-preview" style="margin-top: 10px; text-align: center; display: none;">
+          <img id="review-image-img" src=""
+            style="max-width: 100%; max-height: 120px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);" />
+        </div>
+      </div>
+
+      <button class="btn-primary w-100" onclick="app.submitReview()">
+        <i class="fa-solid fa-paper-plane"></i> Gửi Đánh Giá
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================================== -->
+  <!-- NHIỆM VỤ 1: TOAST NOTIFICATION CONTAINER -->
+  <!-- ===================================== -->
+  <div id="toast-container"></div>
+
+  <!-- ===================================== -->
+  <!-- NHIỆM VỤ 2: CUSTOM MODAL POPUP CENTER -->
+  <!-- ===================================== -->
+  <div id="custom-center-modal" class="hidden modal-overlay">
+    <div class="modal-content">
+      <h3 id="modal-title" style="margin-top: 0;">Tiêu đề</h3>
+      <p id="modal-message" style="color: var(--text-secondary); margin-bottom: 20px;">Nội dung</p>
+      <div id="modal-actions"
+        style="margin-top: 25px; display: flex; gap: 10px; justify-content: center; align-items: center; width: 100%;">
+        <button id="modal-close-btn" class="btn-ghost" onclick="app.closeModal()">Đóng</button>
+        <button id="modal-logout-btn" class="btn-danger hidden" onclick="app.logout(); app.closeModal();">Đăng
+          xuất</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================== -->
+  <!-- NHIỆM VỤ 4: MODAL CHI TIẾT CA (LỚP 3) -->
+  <!-- ===================================== -->
+  <div id="admin-shift-detail-modal" class="hidden modal-overlay">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h3 style="margin: 0;"><i class="fa-solid fa-clipboard-list"></i> Chi Tiết Ca Làm Việc</h3>
+        <button class="btn-ghost" onclick="app.closeShiftDetailModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="shift-meta">
+        <span id="modal-shift-time"></span> &nbsp;|&nbsp;
+        <span id="modal-shift-nv"></span> &nbsp;|&nbsp;
+        <span id="modal-shift-id"></span>
+      </div>
+      <table class="shift-table">
+        <thead>
+          <tr>
+            <th>Tên món</th>
+            <th style="text-align:center;">SL</th>
+            <th style="text-align:right;">Đơn giá</th>
+            <th style="text-align:right;">Thành tiền</th>
+          </tr>
+        </thead>
+        <tbody id="modal-shift-tbody"></tbody>
+      </table>
+      <div class="shift-total">
+        Tổng doanh thu: <strong id="modal-shift-total" style="color: var(--primary);">0đ</strong>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+
+</html>
