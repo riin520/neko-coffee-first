@@ -1923,7 +1923,8 @@ label {
 
   /* 1. Reset chuẩn để không bị đè khung */
   body {
-    padding-bottom: 80px !important;
+    padding-bottom: 100px !important;
+    /* Đảm bảo nội dung không bị che */
   }
 
   /* Đưa padding-bottom vào .view (nội dung chính) chứ không đè vào khung đăng nhập */
@@ -1933,15 +1934,18 @@ label {
 
   /* 2. FIX KHUNG ĐĂNG NHẬP/ĐĂNG KÝ (Bỏ padding thừa) */
   .auth-wrapper {
-    width: 95% !important;
-    margin: 20px auto !important;
-    padding: 20px 15px !important;
-    position: relative;
-    top: 0;
+    width: 100% !important;
+    max-width: 450px !important;
+    /* Không bị quá bự trên máy tính */
+    margin: 10px auto !important;
+    padding: 10px !important;
+    position: static !important;
+    /* Đưa về trạng thái tự nhiên, không bị lệch */
   }
 
   .slider-form-container {
     width: 100% !important;
+    height: auto !important;
   }
 
   /* 3. FIX THANH BOTTOM NAV (Giữ cố định) */
@@ -1954,22 +1958,25 @@ label {
     backdrop-filter: blur(10px);
     display: flex;
     justify-content: space-around;
-    padding: 10px 5px;
+    /* Tăng padding dưới lên 20px để iPhone 14 Pro Max không bị đụng thanh vuốt */
+    padding: 10px 5px calc(20px + env(safe-area-inset-bottom)) 5px !important;
     z-index: 9999;
     border-top: 1px solid #ddd;
+    height: auto !important;
   }
 
   /* 4. FIX KHUNG THÔNG BÁO (Dropdown) */
   #notification-dropdown {
     position: fixed !important;
-    bottom: 80px !important;
+    bottom: 90px !important;
     /* Luôn nằm trên thanh nav */
-    right: 10px !important;
-    left: 10px !important;
+    right: 5px !important;
+    left: 5px !important;
     max-height: 60vh !important;
     overflow-y: auto;
     z-index: 10000;
   }
+
 
   /* Định dạng lại icon/chữ nav cho gọn */
   .nav-links a {
