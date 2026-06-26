@@ -312,28 +312,140 @@
   <!-- ====== ADMIN VIEW ====== -->
   <div id="admin-view" class="view hidden">
     <div class="page-header">
-      <h2><i class="fa-solid fa-chart-line"></i> Quản Trị Chi Nhánh</h2>
-      <p>Báo cáo doanh thu và chi tiết ca làm việc</p>
+      <h2><i class="fa-solid fa-chart-line"></i> Quản Trị Hệ Thống</h2>
+      <p>Doanh thu, nhân viên và thực đơn</p>
     </div>
 
-    <!-- LỚP 1: Danh sách chi nhánh (Thẻ lớn) -->
-    <div id="reports-list" class="admin-layer-1">
-      <!-- Injected via app.js -->
+    <!-- TAB NAVIGATION -->
+    <div class="orders-tabs" style="border-bottom: 1px solid var(--border-color); margin-bottom: 25px;">
+      <button class="btn-ghost active" id="admin-tab-revenue" onclick="app.switchAdminTab('revenue')"
+        style="border-bottom-left-radius:0; border-bottom-right-radius:0; border-bottom: 2px solid var(--primary); color: var(--primary);">
+        <i class="fa-solid fa-chart-line"></i> Doanh Thu
+      </button>
+      <button class="btn-ghost" id="admin-tab-staff" onclick="app.switchAdminTab('staff')"
+        style="border-bottom-left-radius:0; border-bottom-right-radius:0; border-bottom: 2px solid transparent;">
+        <i class="fa-solid fa-users"></i> Nhân Viên
+      </button>
+      <button class="btn-ghost" id="admin-tab-menu" onclick="app.switchAdminTab('menu')"
+        style="border-bottom-left-radius:0; border-bottom-right-radius:0; border-bottom: 2px solid transparent;">
+        <i class="fa-solid fa-utensils"></i> Thực Đơn
+      </button>
     </div>
 
-    <!-- LỚP 2: Danh sách ca của 1 chi nhánh -->
-    <div id="admin-branch-shifts-container" class="admin-layer-2 hidden">
-      <div class="layer-title"
-        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; width: 100%;">
-        <h3 id="admin-branch-shifts-title" style="margin: 0; font-size: 18px;"></h3>
-        <button onclick="app.backToBranches()"
-          style="cursor: pointer; padding: 8px 20px; border-radius: 6px; background: var(--primary); color: white; border: none; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
-          <i class="fa-solid fa-arrow-left"></i> Quay Lại
+    <!-- ====== TAB 1: DOANH THU ====== -->
+    <div id="admin-panel-revenue">
+      <!-- LỚP 1: Danh sách chi nhánh -->
+      <div id="reports-list" class="admin-layer-1"></div>
+
+      <!-- LỚP 2: Danh sách ca của 1 chi nhánh -->
+      <div id="admin-branch-shifts-container" class="admin-layer-2 hidden">
+        <div class="layer-title"
+          style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--border-color); padding-bottom:15px; margin-bottom:25px; width:100%;">
+          <h3 id="admin-branch-shifts-title" style="margin:0; font-size:18px;"></h3>
+          <button onclick="app.backToBranches()"
+            style="cursor:pointer; padding:8px 20px; border-radius:6px; background:var(--primary); color:white; border:none; font-weight:bold;">
+            <i class="fa-solid fa-arrow-left"></i> Quay Lại
+          </button>
+        </div>
+        <div id="admin-branch-shifts-list" class="shifts-grid"></div>
+      </div>
+    </div>
+
+    <!-- ====== TAB 2: NHÂN VIÊN ====== -->
+    <div id="admin-panel-staff" class="hidden">
+
+      <!-- Form thêm nhân viên -->
+      <div class="report-card" style="margin-bottom: 24px;">
+        <h3 style="font-size:15px; font-weight:700; margin-bottom:16px; color:var(--text-primary);">
+          <i class="fa-solid fa-user-plus" style="color:var(--primary);"></i> Thêm Nhân Viên Mới
+        </h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px;">
+          <div>
+            <label style="font-size:13px; color:var(--text-secondary); margin-bottom:4px; display:block;">Họ và
+              tên</label>
+            <input type="text" id="staff-tennv" class="input-brutal" style="margin:0;" placeholder="Nguyễn Văn A" />
+          </div>
+          <div>
+            <label style="font-size:13px; color:var(--text-secondary); margin-bottom:4px; display:block;">Chức
+              vụ</label>
+            <select id="staff-chucvu" class="input-brutal" style="margin:0;">
+              <option value="Pha chế">Pha chế</option>
+              <option value="Quản lý">Quản lý</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:13px; color:var(--text-secondary); margin-bottom:4px; display:block;">Chi
+              nhánh</label>
+            <select id="staff-macn" class="input-brutal" style="margin:0;">
+              <option value="">Đang tải...</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <button class="btn-primary" onclick="app.addStaff()" style="padding:10px 24px;">
+            <i class="fa-solid fa-plus"></i> Thêm Nhân Viên
+          </button>
+          <span style="font-size:12px; color:var(--text-muted);">
+            <i class="fa-solid fa-info-circle"></i> Mật khẩu mặc định: <strong>123456</strong> — Mã NV tự sinh
+          </span>
+        </div>
+      </div>
+
+      <!-- Bảng danh sách nhân viên -->
+      <div class="report-card">
+        <h3 style="font-size:15px; font-weight:700; margin-bottom:16px; color:var(--text-primary);">
+          <i class="fa-solid fa-list" style="color:var(--primary);"></i> Danh Sách Nhân Viên
+        </h3>
+        <div id="staff-list-container">
+          <p style="text-align:center; color:var(--text-muted); padding:20px;">Đang tải...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== TAB 3: THỰC ĐƠN ====== -->
+    <div id="admin-panel-menu" class="hidden">
+
+      <!-- Form thêm món -->
+      <div class="report-card" style="margin-bottom: 24px;">
+        <h3 style="font-size:15px; font-weight:700; margin-bottom:16px; color:var(--text-primary);">
+          <i class="fa-solid fa-circle-plus" style="color:var(--primary);"></i> Thêm Món Mới
+        </h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px;">
+          <div>
+            <label style="font-size:13px; color:var(--text-secondary); margin-bottom:4px; display:block;">Tên
+              món</label>
+            <input type="text" id="menu-tenmon" class="input-brutal" style="margin:0;" placeholder="Cà Phê Đen" />
+          </div>
+          <div>
+            <label style="font-size:13px; color:var(--text-secondary); margin-bottom:4px; display:block;">Giá
+              (VNĐ)</label>
+            <input type="number" id="menu-dongia" class="input-brutal" style="margin:0;" placeholder="35000" min="1000"
+              step="1000" />
+          </div>
+          <div>
+            <label style="font-size:13px; color:var(--text-secondary); margin-bottom:4px; display:block;">Loại
+              món</label>
+            <select id="menu-maloai" class="input-brutal" style="margin:0;">
+              <option value="">Đang tải...</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="app.addMenuItem()" style="padding:10px 24px;">
+          <i class="fa-solid fa-plus"></i> Thêm Món
         </button>
       </div>
-      <div id="admin-branch-shifts-list" class="shifts-grid">
+
+      <!-- Bảng danh sách món -->
+      <div class="report-card">
+        <h3 style="font-size:15px; font-weight:700; margin-bottom:16px; color:var(--text-primary);">
+          <i class="fa-solid fa-list" style="color:var(--primary);"></i> Danh Sách Thực Đơn
+        </h3>
+        <div id="menu-list-container">
+          <p style="text-align:center; color:var(--text-muted); padding:20px;">Đang tải...</p>
+        </div>
       </div>
     </div>
+
   </div>
 
   <!-- ====== SHIFT REPORT VIEW ====== -->

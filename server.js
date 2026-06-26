@@ -746,6 +746,198 @@ app.put("/api/notifications/read-all", async (req, res) => {
 });
 
 // =============================================
+// 18. ADMIN — QUẢN LÝ NHÂN VIÊN
+// =============================================
+
+// Lấy danh sách nhân viên (có thể lọc theo chi nhánh)
+app.get("/api/admin/staff", async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request().query(`
+      SELECT N.MANV, N.TENNV, N.CHUCVU, N.MACN, C.TENCN
+      FROM NHANVIEN N
+      JOIN CHINHANH C ON N.MACN = C.MACN
+      ORDER BY N.MACN, N.CHUCVU, N.MANV
+    `);
+    res.json({ success: true, data: result.recordset });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Lỗi server" });
+  }
+});
+
+// Thêm nhân viên mới — tự sinh MANV
+app.post("/api/admin/staff", async (req, res) => {
+  try {
+    const { tennv, chucvu, macn } = req.body;
+    if (!tennv || !chucvu || !macn)
+      return res.status(400).json({ success: false, message: "Thiếu thông tin bắt buộc" });
+
+    const pool = await poolPromise;
+
+    // Tự sinh MANV theo chức vụ: AD__ hoặc NV__
+    const prefix = chucvu === "Quản lý" ? "AD" : "NV";
+    const existing = await pool.request()
+      .input("prefix", sql.VarChar, prefix + "%")
+      .query(`SELECT TOP 1 MANV FROM NHANVIEN 
+              WHERE MANV LIKE @prefix ORDER BY MANV DESC`);
+
+    let newManv;
+    if (existing.recordset.length > 0) {
+      const lastNum = parseInt(existing.recordset[0].MANV.substring(2)) || 0;
+      newManv = prefix + String(lastNum + 1).padStart(2, "0");
+    } else {
+      newManv = prefix + "01";
+    }
+
+    await pool.request()
+      .input("manv", sql.VarChar, newManv)
+      .input("tennv", sql.NVarChar, tennv)
+      .input("chucvu", sql.NVarChar, chucvu)
+      .input("macn", sql.VarChar, macn)
+      .input("matkhau", sql.VarChar, "123456") // Mật khẩu mặc định
+      .query(`INSERT INTO NHANVIEN (MANV, TENNV, CHUCVU, MACN, MATKHAU)
+              VALUES (@manv, @tennv, @chucvu, @macn, @matkhau)`);
+
+    res.json({ success: true, message: `Đã thêm nhân viên ${newManv}`, manv: newManv });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Lỗi server" });
+  }
+});
+
+// Xóa nhân viên
+app.delete("/api/admin/staff/:manv", async (req, res) => {
+  try {
+    const manv = req.params.manv;
+    const pool = await poolPromise;
+
+    // Kiểm tra có ca đang mở không
+    const caCheck = await pool.request()
+      .input("manv", sql.VarChar, manv)
+      .query(`SELECT MACA FROM CALAMVIEC WHERE MANV = @manv AND GIORA IS NULL`);
+    if (caCheck.recordset.length > 0)
+      return res.status(400).json({ success: false, message: "Nhân viên đang có ca làm việc, không thể xóa." });
+
+    await pool.request()
+      .input("manv", sql.VarChar, manv)
+      .query(`DELETE FROM NHANVIEN WHERE MANV = @manv`);
+
+    res.json({ success: true, message: "Đã xóa nhân viên" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Lỗi server" });
+  }
+});
+
+// =============================================
+// 19. ADMIN — QUẢN LÝ THỰC ĐƠN
+// =============================================
+
+// Lấy danh sách món ăn (kèm loại)
+app.get("/api/admin/menu", async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request().query(`
+      SELECT M.MAMON, M.TENMON, M.DONGIA, M.MALOAI, L.TENLOAI
+      FROM MONAN M
+      JOIN LOAI_MON L ON M.MALOAI = L.MALOAI
+      ORDER BY L.TENLOAI, M.TENMON
+    `);
+    res.json({ success: true, data: result.recordset });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Lỗi server" });
+  }
+});
+
+// Thêm món mới — tự sinh MAMON
+app.post("/api/admin/menu", async (req, res) => {
+  try {
+    const { tenmon, dongia, maloai } = req.body;
+    if (!tenmon || !dongia || !maloai)
+      return res.status(400).json({ success: false, message: "Thiếu thông tin bắt buộc" });
+
+    const pool = await poolPromise;
+
+    // Tự sinh MAMON: MN + số thứ tự
+    const existing = await pool.request()
+      .query(`SELECT TOP 1 MAMON FROM MONAN WHERE MAMON LIKE 'MN%' ORDER BY MAMON DESC`);
+
+    let newMamon;
+    if (existing.recordset.length > 0) {
+      const lastNum = parseInt(existing.recordset[0].MAMON.substring(2)) || 0;
+      newMamon = "MN" + String(lastNum + 1).padStart(2, "0");
+    } else {
+      newMamon = "MN01";
+    }
+
+    await pool.request()
+      .input("mamon", sql.VarChar, newMamon)
+      .input("tenmon", sql.NVarChar, tenmon)
+      .input("dongia", sql.Int, parseInt(dongia))
+      .input("maloai", sql.Int, parseInt(maloai))
+      .query(`INSERT INTO MONAN (MAMON, TENMON, DONGIA, MALOAI)
+              VALUES (@mamon, @tenmon, @dongia, @maloai)`);
+
+    res.json({ success: true, message: `Đã thêm món ${newMamon}`, mamon: newMamon });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Lỗi server" });
+  }
+});
+
+// Xóa món ăn
+app.delete("/api/admin/menu/:mamon", async (req, res) => {
+  try {
+    const mamon = req.params.mamon;
+    const pool = await poolPromise;
+
+    // Kiểm tra món có trong đơn hàng không
+    const hdCheck = await pool.request()
+      .input("mamon", sql.VarChar, mamon)
+      .query(`SELECT TOP 1 MAHD FROM CHITIETHOADON WHERE MAMON = @mamon`);
+    if (hdCheck.recordset.length > 0)
+      return res.status(400).json({ success: false, message: "Món đã có trong đơn hàng, không thể xóa." });
+
+    // Xóa khỏi giỏ hàng tạm trước
+    await pool.request()
+      .input("mamon", sql.VarChar, mamon)
+      .query(`DELETE FROM GIOHANG_TAM WHERE MAMON = @mamon`);
+
+    await pool.request()
+      .input("mamon", sql.VarChar, mamon)
+      .query(`DELETE FROM MONAN WHERE MAMON = @mamon`);
+
+    res.json({ success: true, message: "Đã xóa món ăn" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Lỗi server" });
+  }
+});
+
+// Lấy danh sách chi nhánh (cho dropdown)
+app.get("/api/branches", async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request().query(`SELECT MACN, TENCN FROM CHINHANH ORDER BY MACN`);
+    res.json({ success: true, data: result.recordset });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Lỗi server" });
+  }
+});
+
+// Lấy danh sách loại món (cho dropdown)
+app.get("/api/categories", async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request().query(`SELECT MALOAI, TENLOAI FROM LOAI_MON ORDER BY MALOAI`);
+    res.json({ success: true, data: result.recordset });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Lỗi server" });
+  }
+});
+
+// =============================================
 // KHỞI ĐỘNG SERVER
 // =============================================
 const PORT = process.env.PORT || 3000;

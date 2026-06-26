@@ -140,7 +140,7 @@ const app = {
     if (viewId === "menu") this.loadMenu();
     if (viewId === "checkout") this.renderCheckout();
     if (viewId === "orders") this.loadOrders();
-    if (viewId === "admin") this.loadReports();
+    if (viewId === "admin") { this.loadReports(); this.switchAdminTab("revenue"); }
     if (viewId === "shift-report") this.loadShiftReport();
     if (viewId === "login") this._updateAuthOverlay();
   },
@@ -856,8 +856,251 @@ const app = {
   },
 
   // =====================================================================
-  // LOAD REPORTS (Admin) — Phiên bản chốt, bọc thép chống sập
+  // ADMIN TAB SWITCHING
   // =====================================================================
+  switchAdminTab(tab) {
+    const tabs = ["revenue", "staff", "menu"];
+    tabs.forEach(t => {
+      const btn = document.getElementById(`admin-tab-${t}`);
+      const panel = document.getElementById(`admin-panel-${t}`);
+      if (btn) {
+        btn.style.borderBottomColor = "transparent";
+        btn.style.color = "var(--text-secondary)";
+        btn.classList.remove("active");
+      }
+      if (panel) panel.classList.add("hidden");
+    });
+
+    const activeBtn = document.getElementById(`admin-tab-${tab}`);
+    const activePanel = document.getElementById(`admin-panel-${tab}`);
+    if (activeBtn) {
+      activeBtn.style.borderBottomColor = "var(--primary)";
+      activeBtn.style.color = "var(--primary)";
+      activeBtn.classList.add("active");
+    }
+    if (activePanel) activePanel.classList.remove("hidden");
+
+    if (tab === "staff") this.loadAdminStaff();
+    if (tab === "menu") this.loadAdminMenu();
+  },
+
+  // =====================================================================
+  // ADMIN — QUẢN LÝ NHÂN VIÊN
+  // =====================================================================
+  async loadAdminStaff() {
+    const container = document.getElementById("staff-list-container");
+    const branchSelect = document.getElementById("staff-macn");
+    if (!container) return;
+
+    // Load dropdown chi nhánh nếu chưa có
+    if (branchSelect && branchSelect.options[0]?.text === "Đang tải...") {
+      try {
+        const res = await fetch(`${API_URL}/branches`);
+        const data = await res.json();
+        if (data.success) {
+          branchSelect.innerHTML = data.data
+            .map(b => `<option value="${b.MACN}">${b.MACN} — ${b.TENCN}</option>`)
+            .join("");
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/admin/staff`);
+      const data = await res.json();
+      if (!data.success || data.data.length === 0) {
+        container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-users"></i><p>Chưa có nhân viên nào</p></div>`;
+        return;
+      }
+
+      container.innerHTML = `
+        <table style="width:100%; border-collapse:collapse; font-size:14px;">
+          <thead>
+            <tr style="background:var(--bg); text-align:left;">
+              <th style="padding:10px 12px; color:var(--text-secondary); font-weight:600; border-bottom:1px solid var(--border-color);">Mã NV</th>
+              <th style="padding:10px 12px; color:var(--text-secondary); font-weight:600; border-bottom:1px solid var(--border-color);">Họ tên</th>
+              <th style="padding:10px 12px; color:var(--text-secondary); font-weight:600; border-bottom:1px solid var(--border-color);">Chức vụ</th>
+              <th style="padding:10px 12px; color:var(--text-secondary); font-weight:600; border-bottom:1px solid var(--border-color);">Chi nhánh</th>
+              <th style="padding:10px 12px; border-bottom:1px solid var(--border-color);"></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.data.map(nv => `
+              <tr style="border-bottom:1px solid var(--border-color);">
+                <td style="padding:10px 12px; font-weight:600; color:var(--primary);">${nv.MANV}</td>
+                <td style="padding:10px 12px;">${nv.TENNV}</td>
+                <td style="padding:10px 12px;">
+                  <span style="background:${nv.CHUCVU === 'Quản lý' ? 'var(--primary-light, #e8f4fd)' : 'var(--bg)'}; color:${nv.CHUCVU === 'Quản lý' ? 'var(--primary)' : 'var(--text-secondary)'}; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:600;">
+                    ${nv.CHUCVU}
+                  </span>
+                </td>
+                <td style="padding:10px 12px; color:var(--text-secondary); font-size:13px;">${nv.TENCN}</td>
+                <td style="padding:10px 12px; text-align:right;">
+                  <button class="btn-danger btn-icon" style="padding:5px 12px; font-size:12px;" onclick="app.deleteStaff('${nv.MANV}', '${nv.TENNV}')">
+                    <i class="fa-solid fa-trash"></i> Xóa
+                  </button>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    } catch (err) {
+      container.innerHTML = `<p style="color:var(--danger);">Lỗi tải danh sách nhân viên</p>`;
+    }
+  },
+
+  async addStaff() {
+    const tennv = document.getElementById("staff-tennv")?.value.trim();
+    const chucvu = document.getElementById("staff-chucvu")?.value;
+    const macn = document.getElementById("staff-macn")?.value;
+
+    if (!tennv) return this.showToast("Vui lòng nhập tên nhân viên!", "error");
+
+    try {
+      const res = await fetch(`${API_URL}/admin/staff`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tennv, chucvu, macn }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById("staff-tennv").value = "";
+        this.showToast(`Đã thêm nhân viên ${data.manv} — mật khẩu mặc định: 123456`, "success");
+        this.loadAdminStaff();
+      } else {
+        this.showToast(data.message, "error");
+      }
+    } catch (err) {
+      this.showToast("Lỗi kết nối máy chủ", "error");
+    }
+  },
+
+  async deleteStaff(manv, tennv) {
+    if (!confirm(`Xác nhận xóa nhân viên ${tennv} (${manv})?`)) return;
+    try {
+      const res = await fetch(`${API_URL}/admin/staff/${manv}`, { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) {
+        this.showToast("Đã xóa nhân viên", "success");
+        this.loadAdminStaff();
+      } else {
+        this.showToast(data.message, "error");
+      }
+    } catch (err) {
+      this.showToast("Lỗi kết nối máy chủ", "error");
+    }
+  },
+
+  // =====================================================================
+  // ADMIN — QUẢN LÝ THỰC ĐƠN
+  // =====================================================================
+  async loadAdminMenu() {
+    const container = document.getElementById("menu-list-container");
+    const loaiSelect = document.getElementById("menu-maloai");
+    if (!container) return;
+
+    // Load dropdown loại món nếu chưa có
+    if (loaiSelect && loaiSelect.options[0]?.text === "Đang tải...") {
+      try {
+        const res = await fetch(`${API_URL}/categories`);
+        const data = await res.json();
+        if (data.success) {
+          loaiSelect.innerHTML = data.data
+            .map(l => `<option value="${l.MALOAI}">${l.TENLOAI}</option>`)
+            .join("");
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/admin/menu`);
+      const data = await res.json();
+      if (!data.success || data.data.length === 0) {
+        container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-utensils"></i><p>Thực đơn trống</p></div>`;
+        return;
+      }
+
+      container.innerHTML = `
+        <table style="width:100%; border-collapse:collapse; font-size:14px;">
+          <thead>
+            <tr style="background:var(--bg); text-align:left;">
+              <th style="padding:10px 12px; color:var(--text-secondary); font-weight:600; border-bottom:1px solid var(--border-color);">Mã món</th>
+              <th style="padding:10px 12px; color:var(--text-secondary); font-weight:600; border-bottom:1px solid var(--border-color);">Tên món</th>
+              <th style="padding:10px 12px; color:var(--text-secondary); font-weight:600; border-bottom:1px solid var(--border-color);">Loại</th>
+              <th style="padding:10px 12px; color:var(--text-secondary); font-weight:600; border-bottom:1px solid var(--border-color); text-align:right;">Giá</th>
+              <th style="padding:10px 12px; border-bottom:1px solid var(--border-color);"></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.data.map(m => `
+              <tr style="border-bottom:1px solid var(--border-color);">
+                <td style="padding:10px 12px; font-weight:600; color:var(--primary); font-size:12px;">${m.MAMON}</td>
+                <td style="padding:10px 12px; font-weight:500;">${m.TENMON}</td>
+                <td style="padding:10px 12px;">
+                  <span style="background:var(--bg); color:var(--text-secondary); padding:3px 10px; border-radius:20px; font-size:12px;">${m.TENLOAI}</span>
+                </td>
+                <td style="padding:10px 12px; text-align:right; font-weight:600; color:var(--text-primary);">${m.DONGIA.toLocaleString()}đ</td>
+                <td style="padding:10px 12px; text-align:right;">
+                  <button class="btn-danger btn-icon" style="padding:5px 12px; font-size:12px;" onclick="app.deleteMenuItem('${m.MAMON}', '${m.TENMON}')">
+                    <i class="fa-solid fa-trash"></i> Xóa
+                  </button>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    } catch (err) {
+      container.innerHTML = `<p style="color:var(--danger);">Lỗi tải thực đơn</p>`;
+    }
+  },
+
+  async addMenuItem() {
+    const tenmon = document.getElementById("menu-tenmon")?.value.trim();
+    const dongia = document.getElementById("menu-dongia")?.value;
+    const maloai = document.getElementById("menu-maloai")?.value;
+
+    if (!tenmon) return this.showToast("Vui lòng nhập tên món!", "error");
+    if (!dongia || parseInt(dongia) < 1000) return this.showToast("Giá không hợp lệ!", "error");
+
+    try {
+      const res = await fetch(`${API_URL}/admin/menu`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tenmon, dongia, maloai }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById("menu-tenmon").value = "";
+        document.getElementById("menu-dongia").value = "";
+        this.showToast(`Đã thêm món ${data.mamon}`, "success");
+        this.loadAdminMenu();
+      } else {
+        this.showToast(data.message, "error");
+      }
+    } catch (err) {
+      this.showToast("Lỗi kết nối máy chủ", "error");
+    }
+  },
+
+  async deleteMenuItem(mamon, tenmon) {
+    if (!confirm(`Xác nhận xóa món "${tenmon}" (${mamon})?`)) return;
+    try {
+      const res = await fetch(`${API_URL}/admin/menu/${mamon}`, { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) {
+        this.showToast("Đã xóa món ăn", "success");
+        this.loadAdminMenu();
+      } else {
+        this.showToast(data.message, "error");
+      }
+    } catch (err) {
+      this.showToast("Lỗi kết nối máy chủ", "error");
+    }
+  },
+
+
   async loadReports() {
     if (!this.user || this.user.role !== "ADMIN") return;
     try {
