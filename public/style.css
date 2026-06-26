@@ -1922,30 +1922,42 @@ label {
 @media (max-width: 600px) {
 
   /* 1. Reset chuẩn để không bị đè khung */
+  html,
   body {
-    padding-bottom: 100px !important;
-    /* Đảm bảo nội dung không bị che */
-  }
-
-  /* Đưa padding-bottom vào .view (nội dung chính) chứ không đè vào khung đăng nhập */
-  .view {
-    padding-bottom: 80px !important;
-  }
-
-  /* 2. FIX KHUNG ĐĂNG NHẬP/ĐĂNG KÝ (Bỏ padding thừa) */
-  .auth-wrapper {
     width: 100% !important;
-    max-width: 450px !important;
-    /* Không bị quá bự trên máy tính */
+    overflow-x: hidden !important;
+    /* Chống tràn ngang */
+    padding: 0 !important;
+    margin: 0 !important;
+
+    /* Đưa padding-bottom vào .view (nội dung chính) chứ không đè vào khung đăng nhập */
+
+
+    .view,
+    .auth-wrapper,
+    .admin-container {
+      width: 100vw !important;
+      height: auto !important;
+      position: static !important;
+      padding: 10px !important;
+      margin: 0 !important;
+    }
+
+    /* 2. FIX KHUNG ĐĂNG NHẬP/ĐĂNG KÝ (Bỏ padding thừa) */
+    /* .auth-wrapper {
+      width: 100% !important;
+      max-width: 450px !important;
+      /* Không bị quá bự trên máy tính */
     margin: 10px auto !important;
     padding: 10px !important;
     position: static !important;
     /* Đưa về trạng thái tự nhiên, không bị lệch */
   }
 
-  .slider-form-container {
+  */ .slider-form-container {
     width: 100% !important;
-    height: auto !important;
+    padding: 0 !important;
+    margin-top: 20px !important;
   }
 
   /* 3. FIX THANH BOTTOM NAV (Giữ cố định) */
