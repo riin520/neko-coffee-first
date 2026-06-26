@@ -1921,49 +1921,68 @@ label {
    =================================================== */
 @media (max-width: 600px) {
 
-  /* 1. TRẢ LẠI SỰ TỰ DO CHO KHUNG ĐĂNG NHẬP */
-  /* Bỏ mọi ép buộc về width/height, để nó tự co giãn theo nội dung */
+  /* 1. Reset wrapper để form không bị bóp méo */
   .auth-wrapper {
+    display: block !important;
     width: 100% !important;
-    max-width: 450px !important;
-    /* Không bị quá bự trên máy tính */
-    margin: 10px auto !important;
-    padding: 10px !important;
-    position: static !important;
-    /* Đưa về trạng thái tự nhiên, không bị lệch */
-  }
-
-  .navbar {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    padding: 10px 15px !important;
-    height: 60px !important;
-    width: 100% !important;
-  }
-
-  /* Đảm bảo form bên trong cũng co giãn thoải mái */
-  .slider-form-container {
-    width: 100% !important;
-    height: auto !important;
-  }
-
-  /* 2. NÂNG THANH NAV LÊN CAO (Tránh thanh Home Indicator iPhone) */
-  .nav-links {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    background: rgba(255, 255, 255, 0.98) !important;
-    backdrop-filter: blur(10px) !important;
-    display: flex !important;
-    justify-content: space-around !important;
-    padding: 10px 5px calc(20px + env(safe-area-inset-bottom)) 5px !important;
-    z-index: 9999 !important;
-    border-top: 1px solid #ddd !important;
+    padding: 0 10px !important;
     margin: 0 !important;
+    overflow-x: hidden !important;
+  }
+
+  /* 2. KILL CÁI SLIDER: Ép nó về trạng thái tĩnh */
+  .slider-form-container {
+    display: block !important;
+    width: 100% !important;
+    transform: none !important;
+    /* Hủy trượt ngang */
+    transition: none !important;
+    position: relative !important;
+    height: auto !important;
+    /* Tự co giãn theo nội dung */
+    padding: 0 !important;
+  }
+
+  /* 3. Làm cho các form xếp dọc/hiện rõ ràng */
+  .auth-form {
+    display: block !important;
+    width: 95% !important;
+    margin: 15px auto !important;
+    /* Khoảng cách giữa các form */
+    float: none !important;
+    position: static !important;
+    padding: 20px !important;
+    border-radius: 15px !important;
+    background: #fff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
   }
 }
+
+.navbar {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 10px 15px !important;
+  height: 60px !important;
+  width: 100% !important;
+}
+
+/* 2. NÂNG THANH NAV LÊN CAO (Tránh thanh Home Indicator iPhone) */
+.nav-links {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(10px) !important;
+  display: flex !important;
+  justify-content: space-around !important;
+  padding: 10px 5px calc(20px + env(safe-area-inset-bottom)) 5px !important;
+  z-index: 9999 !important;
+  border-top: 1px solid #ddd !important;
+  margin: 0 !important;
+}
+
 
 /* 3. FIX CHIỀU CAO BODY */
 body {
@@ -2072,16 +2091,7 @@ body {
     content: '\f2f5';
   }
 
-  /* 2. FIX FORM ĐĂNG NHẬP/ĐĂNG KÝ */
-  .auth-wrapper {
-    width: 50% !important;
-    margin: 0 auto;
-    padding: 20px 10px;
-  }
 
-  .slider-form-container {
-    width: 100% !important;
-  }
 
   /* 3. FIX KHUNG CHUNG (BODY) */
   body {
