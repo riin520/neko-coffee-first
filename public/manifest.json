@@ -1,0 +1,16 @@
+{
+    "name": "Neko Coffee App",
+    "short_name": "Neko",
+    "description": "Thức uống tuyệt hảo",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0033FF",
+    "icons": [
+        {
+            "src": "https://cdn-icons-png.flaticon.com/512/1047/1047503.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

@@ -7,6 +7,7 @@
   <meta name="description"
     content="Neko Coffee – Đặt thức uống online, giao hàng tận nơi. Trải nghiệm cà phê tuyệt hảo, phục vụ tận tâm." />
   <title>Neko Coffee – Thức Uống Tuyệt Hảo</title>
+  <link rel="manifest" href="manifest.json" />
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -658,6 +659,15 @@
     </div>
   </div>
   <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('App đã sẵn sàng hóa rồng!', reg.scope))
+          .catch(err => console.log('Tạch PWA rồi:', err));
+      });
+    }
+  </script>
 </body>
 
 </html>
