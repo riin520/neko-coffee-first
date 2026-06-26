@@ -297,31 +297,72 @@ const app = {
     try {
       const res = await fetch(`${API_URL}/products`);
       const data = await res.json();
-      if (data.success) {
-        const list = document.getElementById("product-list");
-        if (!list) return;
-        list.innerHTML = "";
-        data.data.forEach((p) => {
-          list.innerHTML += `
-            <div class="product-card">
-              <div>
-                <span class="product-tag">${p.TENLOAI}</span>
-                <h3>${p.TENMON}</h3>
-              </div>
-              <div>
-                <div class="product-price">${p.DONGIA.toLocaleString()}đ</div>
-                <button class="btn-primary w-100" onclick="app.addToCart('${p.MAMON}', '${p.TENMON}', ${p.DONGIA})">
-                  <i class="fa-solid fa-plus"></i> Thêm vào giỏ
-                </button>
-              </div>
-            </div>
-          `;
+      if (!data.success) return;
+
+      // Lưu toàn bộ sản phẩm vào cache để filter không cần gọi lại API
+      this._allProducts = data.data;
+
+      // Inject category tabs (chỉ inject 1 lần)
+      const tabBar = document.getElementById("menu-category-tabs");
+      if (tabBar && tabBar.querySelectorAll(".menu-cat-btn").length === 1) {
+        const loaiList = [...new Map(data.data.map(p => [p.MALOAI, p.TENLOAI])).entries()];
+        loaiList.forEach(([maloai, tenloai]) => {
+          const btn = document.createElement("button");
+          btn.className = "menu-cat-btn";
+          btn.dataset.loai = maloai;
+          btn.onclick = function () { app.filterMenu(maloai, this); };
+          btn.innerHTML = `${tenloai}`;
+          tabBar.appendChild(btn);
         });
       }
+
+      // Render tất cả sản phẩm lần đầu
+      this._renderProducts(data.data);
     } catch (err) {
       console.error(err);
     }
   },
+
+  filterMenu(loai, btnEl) {
+    // Cập nhật active tab
+    document.querySelectorAll(".menu-cat-btn").forEach(b => b.classList.remove("active"));
+    if (btnEl) btnEl.classList.add("active");
+
+    const products = loai === "all"
+      ? this._allProducts
+      : (this._allProducts || []).filter(p => String(p.MALOAI) === String(loai));
+
+    this._renderProducts(products);
+  },
+
+  _renderProducts(products) {
+    const list = document.getElementById("product-list");
+    if (!list) return;
+    if (!products || products.length === 0) {
+      list.innerHTML = `
+        <div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">
+          <i class="fa-solid fa-mug-hot" style="font-size:36px; opacity:0.3; margin-bottom:12px;"></i>
+          <p>Không có món nào trong danh mục này</p>
+        </div>`;
+      return;
+    }
+    list.innerHTML = products.map(p => `
+      <div class="product-card">
+        <div>
+          <span class="product-tag">${p.TENLOAI}</span>
+          <h3>${p.TENMON}</h3>
+        </div>
+        <div>
+          <div class="product-price">${p.DONGIA.toLocaleString()}đ</div>
+          <button class="btn-primary w-100" onclick="app.addToCart('${p.MAMON}', '${p.TENMON}', ${p.DONGIA})">
+            <i class="fa-solid fa-plus"></i> Thêm vào giỏ
+          </button>
+        </div>
+      </div>
+    `).join("");
+  },
+
+
 
   // =====================================================================
   // CART MANAGEMENT

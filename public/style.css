@@ -606,6 +606,50 @@ label {
   margin-top: 4px;
 }
 
+/* ── Menu page wrapper — căn giữa + thụt lề ── */
+.menu-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Category filter tabs ── */
+.menu-category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.menu-cat-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 18px;
+  border-radius: var(--radius-full, 999px);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-white);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.menu-cat-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-ghost);
+}
+
+.menu-cat-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
 .product-card {
   background: var(--bg-white);
   border: 1px solid var(--border-color);

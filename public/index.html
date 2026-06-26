@@ -142,12 +142,23 @@
 
   <!-- ====== MENU VIEW ====== -->
   <div id="menu-view" class="view hidden">
-    <div class="page-header">
-      <h2><i class="fa-solid fa-list"></i> Thực Đơn</h2>
-      <p>Chọn món yêu thích và thêm vào giỏ hàng</p>
-    </div>
-    <div id="product-list" class="grid-container">
-      <!-- Products injected by app.js -->
+    <div class="menu-wrapper">
+      <div class="page-header">
+        <h2><i class="fa-solid fa-list"></i> Thực Đơn</h2>
+        <p>Chọn món yêu thích và thêm vào giỏ hàng</p>
+      </div>
+
+      <!-- Category filter tabs -->
+      <div id="menu-category-tabs" class="menu-category-tabs">
+        <button class="menu-cat-btn active" data-loai="all" onclick="app.filterMenu('all', this)">
+          <i class="fa-solid fa-border-all"></i> Tất cả
+        </button>
+        <!-- Các tab loại món được inject bởi app.js -->
+      </div>
+
+      <div id="product-list" class="grid-container">
+        <!-- Products injected by app.js -->
+      </div>
     </div>
   </div>
 
