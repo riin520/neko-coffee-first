@@ -1921,46 +1921,76 @@ label {
    =================================================== */
 @media (max-width: 600px) {
 
-  /* 1. Reset chuẩn để không bị đè khung */
-  html,
-  body {
+  /* 1. TRẢ LẠI SỰ TỰ DO CHO KHUNG ĐĂNG NHẬP */
+  /* Bỏ mọi ép buộc về width/height, để nó tự co giãn theo nội dung */
+  .auth-wrapper {
     width: 100% !important;
-    overflow-x: hidden !important;
-    /* Chống tràn ngang */
-    padding: 0 !important;
-    margin: 0 !important;
-
-    /* Đưa padding-bottom vào .view (nội dung chính) chứ không đè vào khung đăng nhập */
-
-
-    .view,
-    .auth-wrapper,
-    .admin-container {
-      width: 100vw !important;
-      height: auto !important;
-      position: static !important;
-      padding: 10px !important;
-      margin: 0 !important;
-    }
-
-    /* 2. FIX KHUNG ĐĂNG NHẬP/ĐĂNG KÝ (Bỏ padding thừa) */
-    /* .auth-wrapper {
-      width: 100% !important;
-      max-width: 450px !important;
-      /* Không bị quá bự trên máy tính */
+    max-width: 450px !important;
+    /* Không bị quá bự trên máy tính */
     margin: 10px auto !important;
     padding: 10px !important;
     position: static !important;
     /* Đưa về trạng thái tự nhiên, không bị lệch */
   }
 
-  */ .slider-form-container {
+  .navbar {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 10px 15px !important;
+    height: 60px !important;
     width: 100% !important;
-    padding: 0 !important;
-    margin-top: 20px !important;
   }
 
-  /* 3. FIX THANH BOTTOM NAV (Giữ cố định) */
+  /* Đảm bảo form bên trong cũng co giãn thoải mái */
+  .slider-form-container {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  /* 2. NÂNG THANH NAV LÊN CAO (Tránh thanh Home Indicator iPhone) */
+  .nav-links {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(10px) !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    padding: 10px 5px calc(20px + env(safe-area-inset-bottom)) 5px !important;
+    z-index: 9999 !important;
+    border-top: 1px solid #ddd !important;
+    margin: 0 !important;
+  }
+}
+
+/* 3. FIX CHIỀU CAO BODY */
+body {
+  padding-bottom: 100px !important;
+  /* Đảm bảo nội dung không bị che */
+}
+
+/* 4. FIX THÔNG BÁO */
+#notification-dropdown {
+  position: absolute !important;
+  /* Bay theo header */
+  top: 60px !important;
+  /* Ngay dưới header */
+  right: 10px !important;
+  width: 90% !important;
+  max-height: 70vh !important;
+  overflow-y: auto !important;
+  z-index: 10000 !important;
+  background: white !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+}
+
+
+@media (max-width: 600px) {
+
+  /* 1. THANH NAV DƯỚI ĐÁY (BOTTOM NAV) */
   .nav-links {
     position: fixed;
     bottom: 0;
@@ -1969,42 +1999,149 @@ label {
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(10px);
     display: flex;
+    flex-direction: row;
     justify-content: space-around;
-    /* Tăng padding dưới lên 20px để iPhone 14 Pro Max không bị đụng thanh vuốt */
-    padding: 10px 5px calc(20px + env(safe-area-inset-bottom)) 5px !important;
+    padding: 8px 2px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
     z-index: 9999;
-    border-top: 1px solid #ddd;
-    height: auto !important;
+    border-top: 1px solid #e2e8f0;
+    margin: 0;
   }
 
-  /* 4. FIX KHUNG THÔNG BÁO (Dropdown) */
-  #notification-dropdown {
-    position: fixed !important;
-    bottom: 90px !important;
-    /* Luôn nằm trên thanh nav */
-    right: 5px !important;
-    left: 5px !important;
-    max-height: 60vh !important;
-    overflow-y: auto;
-    z-index: 10000;
-  }
-
-
-  /* Định dạng lại icon/chữ nav cho gọn */
+  /* Định dạng lại chữ trong Nav - Chống rớt dòng, ép size nhỏ */
   .nav-links a {
-    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     font-size: 9px !important;
+    /* Size cực nhỏ để chứa chữ 'Admin' */
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-decoration: none;
     white-space: nowrap;
-    padding: 2px;
+    /* Không rớt dòng */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 2px;
+    background: none !important;
+    /* Xóa nền thừa */
+    border: none !important;
   }
 
-  /* Nút đăng nhập/đăng xuất */
-  .nav-links a.btn-primary,
+  /* FIX NÚT ĐĂNG NHẬP / ĐĂNG XUẤT (Có màu nền riêng) */
   .nav-links a[onclick*="login"],
   .nav-links a[onclick*="logout"] {
     background: var(--primary) !important;
     color: white !important;
-    padding: 5px 8px !important;
-    border-radius: 8px;
+    padding: 6px 10px !important;
+    border-radius: 12px;
+    margin-top: -2px;
+  }
+
+  /* Icons trong Nav */
+  .nav-links a::before {
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 18px;
+    margin-bottom: 2px;
+  }
+
+  /* Gán icon tương ứng */
+  #nav-home::before {
+    content: '\f015';
+  }
+
+  #nav-admin::before {
+    content: '\f200';
+  }
+
+  #nav-shift::before {
+    content: '\f46a';
+  }
+
+  #nav-orders::before {
+    content: '\f46c';
+  }
+
+  #nav-login::before {
+    content: '\f2f6';
+  }
+
+  #nav-logout::before {
+    content: '\f2f5';
+  }
+
+  /* 2. FIX FORM ĐĂNG NHẬP/ĐĂNG KÝ */
+  .auth-wrapper {
+    width: 50% !important;
+    margin: 0 auto;
+    padding: 20px 10px;
+  }
+
+  .slider-form-container {
+    width: 100% !important;
+  }
+
+  /* 3. FIX KHUNG CHUNG (BODY) */
+  body {
+    padding-bottom: 80px;
+    /* Chừa chỗ cho thanh Nav */
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* 4. FIX MENU MÓN ĂN (VUỐT NGANG) */
+  .menu-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 10px;
+    padding-bottom: 5px;
+    scrollbar-width: none;
+  }
+
+  .product-card {
+    min-width: 80vw;
+    scroll-snap-align: center;
+  }
+
+  /* --- 4. FIX BẢNG ADMIN (Quản lý NV, Món ăn) --- */
+  /* Biến bảng thành dạng cuộn ngang, không làm vỡ khung */
+  table {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    font-size: 12px !important;
+  }
+
+  .shift-table,
+  .admin-table {
+    width: 100% !important;
+  }
+
+  th,
+  td {
+    padding: 8px 4px !important;
+    font-size: 11px !important;
+  }
+
+  /* Fix mấy cái card Admin cho nó dàn hàng dọc */
+  .shifts-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .admin-branch-card {
+    width: 100% !important;
+    padding: 15px !important;
+  }
+
+  /* Fix tiêu đề bị lệch */
+  .layer-title {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
   }
 }
