@@ -384,6 +384,12 @@ const app = {
   },
 
   async addToCart(mamon, tenmon, dongia) {
+
+    // Thêm đúng 1 dòng này để bật rung điện thoại
+    if (navigator.vibrate) navigator.vibrate(50);
+
+    const existing = this.cart.find((item) => item.mamon === mamon);
+    // ... code cũ của mày kệ nó, đừng đụng
     if (!this.user) {
       alert("Vui lòng đăng nhập để đặt món!");
       this.navigate("login");

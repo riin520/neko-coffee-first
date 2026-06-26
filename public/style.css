@@ -1915,3 +1915,123 @@ label {
   font-weight: 700;
   color: var(--success);
 }
+
+/* ===================================================
+   GÓI 1: GIAO DIỆN MOBILE CHUẨN APP (AN TOÀN 100%)
+   =================================================== */
+@media (max-width: 600px) {
+
+  /* 1. BIẾN THANH MENU THÀNH BOTTOM NAV KÍNH MỜ */
+  .nav-links {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    z-index: 9999;
+    margin: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+  }
+
+  /* Định dạng lại chữ của các nút */
+  .nav-links a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 5px;
+    gap: 4px;
+    background: none !important;
+  }
+
+  .nav-links a:hover,
+  .nav-links a:active {
+    color: var(--primary);
+  }
+
+  /* MA THUẬT: Tự chèn Icon vào nút bằng CSS, khỏi đụng HTML */
+  #nav-home::before {
+    content: '\f015';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 22px;
+  }
+
+  #nav-admin::before {
+    content: '\f200';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 22px;
+  }
+
+  #nav-shift::before {
+    content: '\f46a';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 22px;
+  }
+
+  #nav-orders::before {
+    content: '\f46c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 22px;
+  }
+
+  #nav-login::before {
+    content: '\f2f6';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 22px;
+  }
+
+  #nav-logout::before {
+    content: '\f2f5';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 22px;
+    color: var(--danger);
+  }
+
+  /* Đẩy nội dung web lên để không bị thanh Nav che mất */
+  body {
+    padding-bottom: 85px;
+  }
+
+  /* 2. MENU MÓN ĂN VUỐT NGANG SIÊU MƯỢT */
+  .menu-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /* Hít thẻ khi vuốt */
+    gap: 15px;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Ẩn thanh cuộn xấu xí */
+  }
+
+  .menu-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-card {
+    min-width: 75vw;
+    /* Thẻ món ăn rộng 75% màn hình đt */
+    scroll-snap-align: center;
+    /* Quẹt là tự hít vào giữa */
+    flex: 0 0 auto;
+    margin-bottom: 0;
+    box-shadow: var(--shadow-sm);
+  }
+}
