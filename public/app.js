@@ -87,9 +87,12 @@ const app = {
     const pointsGroup = document.getElementById("points-group");
     const floatingCart = document.getElementById("floating-cart");
     const navNoti = document.getElementById("nav-notifications");
+    const hamburgerBtn = document.getElementById("nav-hamburger");
 
     if (this.user) {
       if (navNoti) navNoti.classList.remove("hidden");
+      // Hamburger hiện khi đã login (mobile dùng, desktop bị display:none bởi CSS)
+      if (hamburgerBtn) hamburgerBtn.classList.remove("hidden");
       this.pollNotifications();
       if (loginNav) loginNav.classList.add("hidden");
       if (logoutNav) logoutNav.classList.remove("hidden");
@@ -102,7 +105,6 @@ const app = {
         this.user.role === "STAFF"
           ? shiftNav.classList.remove("hidden")
           : shiftNav.classList.add("hidden");
-
       if (pointsGroup) {
         if (this.user.role === "CUSTOMER") {
           pointsGroup.classList.remove("hidden");
@@ -115,6 +117,7 @@ const app = {
       if (floatingCart) floatingCart.classList.remove("hidden");
       this.loadCart();
     } else {
+      if (hamburgerBtn) hamburgerBtn.classList.add("hidden");
       if (loginNav) loginNav.classList.remove("hidden");
       if (logoutNav) logoutNav.classList.add("hidden");
       if (adminNav) adminNav.classList.add("hidden");
@@ -124,6 +127,44 @@ const app = {
       if (pointsGroup) pointsGroup.classList.add("hidden");
       if (navNoti) navNoti.classList.add("hidden");
       this.stopNotificationPolling();
+    }
+  },
+
+  // ── MOBILE: Hamburger Drawer ──────────────────────────────────────────
+  openHamburger() {
+    const overlay = document.getElementById("hb-overlay");
+    const drawer = document.getElementById("hb-drawer");
+    if (!overlay || !drawer) return;
+    const role = this.user?.role;
+    // Show/hide drawer items theo role
+    document.getElementById("hbd-orders")?.classList.toggle("hidden", role !== "CUSTOMER");
+    document.getElementById("hbd-admin")?.classList.toggle("hidden", role !== "ADMIN");
+    document.getElementById("hbd-shift")?.classList.toggle("hidden", role !== "STAFF");
+    const lo = document.getElementById("hbd-logout");
+    if (lo) lo.style.display = this.user ? "flex" : "none";
+    overlay.style.display = "block";
+    requestAnimationFrame(() => { drawer.style.bottom = "0"; });
+  },
+
+  closeHamburger() {
+    const overlay = document.getElementById("hb-overlay");
+    const drawer = document.getElementById("hb-drawer");
+    if (drawer) drawer.style.bottom = "-360px";
+    setTimeout(() => { if (overlay) overlay.style.display = "none"; }, 300);
+  },
+
+  // ── MOBILE: Auth tab switcher ─────────────────────────────────────────
+  switchMobileAuthTab(tab, btnEl) {
+    document.querySelectorAll(".auth-mobile-tab").forEach(b => b.classList.remove("active"));
+    if (btnEl) btnEl.classList.add("active");
+    const signIn = document.querySelector(".sign-in-container");
+    const signUp = document.querySelector(".sign-up-container");
+    if (tab === "login") {
+      signIn?.classList.remove("mobile-hide");
+      signUp?.classList.remove("mobile-show");
+    } else {
+      signIn?.classList.add("mobile-hide");
+      signUp?.classList.add("mobile-show");
     }
   },
 

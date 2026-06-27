@@ -76,6 +76,12 @@
       <a href="#" onclick="app.logout()" id="nav-logout" class="hidden nav-logout">
         <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
       </a>
+
+      <!-- Hamburger: chỉ hiện trên mobile khi đã login -->
+      <button class="nav-hamburger hidden" id="nav-hamburger" onclick="app.openHamburger()">
+        <i class="fa-solid fa-bars"></i>
+        <span>Thêm</span>
+      </button>
     </div>
   </nav>
 
@@ -481,6 +487,15 @@
   <div id="login-view" class="view hidden">
     <div class="auth-wrapper-v2">
       <div class="slider-container" id="slider-container">
+        <!-- Mobile only: tab pill thay tấm trượt xanh -->
+        <div class="auth-mobile-tabs">
+          <button class="auth-mobile-tab active" onclick="app.switchMobileAuthTab('login',this)">
+            <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập
+          </button>
+          <button class="auth-mobile-tab" onclick="app.switchMobileAuthTab('register',this)">
+            <i class="fa-solid fa-user-plus"></i> Đăng Ký
+          </button>
+        </div>
 
         <!-- FORM ĐĂNG KÝ (NẰM BÊN TRÁI, ẨN MẶC ĐỊNH) -->
         <div class="slider-form-container sign-up-container">
@@ -668,6 +683,45 @@
       });
     }
   </script>
+  <!-- MOBILE HAMBURGER DRAWER -->
+  <div id="hb-overlay" onclick="app.closeHamburger()"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:9990;backdrop-filter:blur(2px);">
+  </div>
+  <div id="hb-drawer"
+    style="position:fixed;bottom:-360px;left:0;width:100%;background:var(--bg-white);border-radius:20px 20px 0 0;z-index:9991;padding:0 20px;transition:bottom 0.3s cubic-bezier(0.32,0.72,0,1);box-shadow:0 -8px 30px rgba(0,0,0,0.15);">
+    <div style="width:40px;height:4px;background:#ddd;border-radius:2px;margin:14px auto 18px;"></div>
+    <p
+      style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">
+      Tùy chọn thêm</p>
+    <div id="hbd-orders" class="hidden">
+      <button class="drawer-item" onclick="app.navigate('orders');app.closeHamburger()">
+        <div class="drawer-icon"><i class="fa-solid fa-receipt"></i></div>
+        <span>Đơn hàng của tôi</span>
+        <i class="fa-solid fa-chevron-right" style="margin-left:auto;color:#bbb;font-size:12px;"></i>
+      </button>
+    </div>
+    <div id="hbd-admin" class="hidden">
+      <button class="drawer-item" onclick="app.navigate('admin');app.closeHamburger()">
+        <div class="drawer-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <span>Quản trị hệ thống</span>
+        <i class="fa-solid fa-chevron-right" style="margin-left:auto;color:#bbb;font-size:12px;"></i>
+      </button>
+    </div>
+    <div id="hbd-shift" class="hidden">
+      <button class="drawer-item" onclick="app.navigate('shift-report');app.closeHamburger()">
+        <div class="drawer-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+        <span>Báo cáo ca làm việc</span>
+        <i class="fa-solid fa-chevron-right" style="margin-left:auto;color:#bbb;font-size:12px;"></i>
+      </button>
+    </div>
+    <button class="drawer-item" id="hbd-logout" onclick="app.logout();app.closeHamburger()" style="display:none;">
+      <div class="drawer-icon red"><i class="fa-solid fa-right-from-bracket"></i></div>
+      <span style="color:var(--danger);">Đăng xuất</span>
+      <i class="fa-solid fa-chevron-right" style="margin-left:auto;color:#bbb;font-size:12px;"></i>
+    </button>
+    <div style="height:calc(env(safe-area-inset-bottom) + 20px);"></div>
+  </div>
+
 </body>
 
 </html>
